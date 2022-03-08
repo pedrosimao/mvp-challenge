@@ -1,11 +1,8 @@
-# ReactTS 17 Start-up Starter (SPA)
+# MVP Match Challenge
 
-My personal starter project! It was forked from [vite-reactts17-chakra-jest-husky](https://github.com/The24thDS/vite-reactts17-chakra-jest-husky) and improved upon.
-It is intended to quickly bootstrap React SPA apps for any React project.
+Design and functionality implementation of the challenge.
 
-This is a [React](https://reactjs.org) + [TypeScript](https://www.typescriptlang.org/) + [Chakra UI](https://chakra-ui.com) boilerplate to be built with [Vite](https://vitejs.dev).
-
-## What's inside?
+## Main Library Choices
 
 - [ReactJS](https://reactjs.org)
 - [Vite](https://vitejs.dev)
@@ -18,20 +15,11 @@ This is a [React](https://reactjs.org) + [TypeScript](https://www.typescriptlang
 - [Eslint](https://eslint.org)
 - [Prettier](https://prettier.io)
 - [Husky](https://typicode.github.io/husky)
+- [React-Query](https://react-query.tanstack.com)
 
 \+ other smaller dependencies
 
-## Todo
-
-- Add a full Chakra UI Theme Example
-- Configure `Cypress` to mount React components (SVG and Macros issues)
-- Add `typesafe-i18n` as translation Library
-- Add `inlang` as translation host
-- Add `axios` with examples
-- Add `react-query` with examples
-- Add a branch with authenticated / unauthenticated routes examples
-
-# Technical choices
+# Code Quality Control
 
 - Imports are sorted automatically (rules can be changed via .eslintrc.js config file)
 - ESLint and Prettier are integrated with VSCode out of the box (you just need VSCode's ESLint plugin).
@@ -56,31 +44,13 @@ For the same in Webstorm follow these instructions:
 
 ## Getting started
 
-1. Create the project.
-
-   ```bash
-   npx degit PedroSimao/react-startup-starter my-app
-   ```
-
-2. Access the project directory.
-
-   ```bash
-   cd my-app
-   ```
-
-3. Initialize a git repository.
-
-   ```bash
-   git init
-   ```
-
-4. Install dependencies.
+1. Install dependencies.
 
    ```bash
    yarn
    ```
 
-5. Serve with hot reload at http://localhost:3000.
+2. Serve with hot reload at http://localhost:3000.
    ```bash
    yarn dev
    ```
@@ -120,7 +90,3 @@ yarn build
   ```bash
   yarn test:watch
   ```
-
-## License
-
-This project is licensed under the MIT License.
