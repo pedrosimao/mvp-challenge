@@ -1,0 +1,9 @@
+{
+  "testFiles": "**/*.spec.{ts,tsx}",
+  "componentFolder": "src",
+  "baseUrl": "http://localhost:3000",
+  "video": false,
+  "fixturesFolder": false,
+  "viewportHeight": 800,
+  "viewportWidth": 1280
+}

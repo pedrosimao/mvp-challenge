@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": [
+      "vite/client",
+      "vite-plugin-svgr/client",
+      "@testing-library/jest-dom",
+      "vitest/globals",
+      "cypress",
+      "@testing-library/cypress"
+    ],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "allowUmdGlobalAccess": true,
+    "downlevelIteration": true,
+    "baseUrl": "./"
+  },
+  "include": ["src", "typings"]
+}
