@@ -34,14 +34,7 @@ module.exports = (on, config) => {
       options,
       viteConfig: {
         configFile,
-        // configFile: path.resolve(__dirname, '..', '..', '..', 'vite.config.ts'),
       },
     }),
   )
 }
-
-// module.exports = (on, config) => {
-//   on('dev-server:start', (options) => startDevServer({ options }))
-//
-//   return config
-// }
