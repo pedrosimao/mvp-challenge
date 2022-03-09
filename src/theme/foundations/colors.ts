@@ -5,6 +5,6 @@ export const colors = {
   brand: baseTheme.colors.telegram,
   brandSecondary: baseTheme.colors.orange,
   // Individual Colors
-  primary: baseTheme.colors.telegram['400'],
-  secondary: baseTheme.colors.orange['400'],
+  primary: '#1BC5BD',
+  secondary: '#005B96',
 }

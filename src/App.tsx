@@ -1,67 +1,45 @@
-import { Box, Button, Flex, Image, Link, Text } from '@chakra-ui/react'
-import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { Box, Button, Flex, Heading, Select, Text } from '@chakra-ui/react'
 
+import { NoReports } from 'src/components/NoReports'
 import { ThemeToggleButton } from 'src/components/ThemeToggleButton'
 
-import logo from './logo.svg'
-
-const textFontSizes = [16, 18, 24, 30]
-
-export const App = (): JSX.Element => {
-  const [count, setCount] = useState(0)
-
-  return (
-    <Box>
-      <Flex
-        as="header"
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-        h="100vh"
-        fontSize="3xl"
-      >
-        <motion.div
-          animate={{ rotateZ: 360 }}
-          transition={{
-            repeat: Infinity,
-            duration: 20,
-            ease: 'linear',
-          }}
-        >
-          <Image src={logo} alt="" h="40vmin" />
-        </motion.div>
-        <Text fontSize={textFontSizes}>Hello Vite + React + Typescript + Chakra UI!</Text>
-        <Button
-          variant="primaryOutline"
-          fontSize={textFontSizes}
-          onClick={() => setCount((c) => c + 1)}
-          marginTop="2"
-        >
-          count: {count}
-        </Button>
-        <Text fontSize={textFontSizes}>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </Text>
-        <Text fontSize={textFontSizes}>
-          <Link href="https://reactjs.org" isExternal color="primary">
-            Learn React
-          </Link>
-          {' | '}
-          <Link href="https://vitejs.dev/guide/features.html" isExternal>
-            Vite Docs
-          </Link>
-          {' | '}
-          <Link href="https://www.typescriptlang.org/" isExternal color="#61dafb">
-            Typescript
-          </Link>
-          {' | '}
-          <Link href="https://chakra-ui.com" isExternal color="#61dafb">
-            Chakra UI
-          </Link>
-        </Text>
+export const App = (): JSX.Element => (
+  <Box>
+    <Box as="header" h="100vh" margin="0 auto">
+      {/* Header */}
+      <Flex as="header" direction="row" justifyContent="space-between" w="95%">
+        <Flex direction="column">
+          <Heading as="h2" fontSize={24}>
+            Reports
+          </Heading>
+          <Text fontWeight={700} fontSize={16} color="#7E8299">
+            Easily generate a report of your transactions
+          </Text>
+        </Flex>
+        <Flex minW={700} alignItems="center">
+          <Select placeholder="Select Project" w={150}>
+            <option>Project 1</option>
+            <option>Project 2</option>
+            <option>Project 3</option>
+          </Select>
+          <Select placeholder="Select Gateway" w={150} colorScheme="brand" marginLeft={23}>
+            <option>Gateway 1</option>
+            <option>Gateway 2</option>
+            <option>Gateway 3</option>
+          </Select>
+          <Button w={140} variant="primary" marginLeft={23}>
+            From Date
+          </Button>
+          <Button w={140} variant="primary" marginLeft={23}>
+            To Date
+          </Button>
+          <Button w={140} variant="secondary" marginLeft={23}>
+            Generate Report
+          </Button>
+        </Flex>
       </Flex>
-      <ThemeToggleButton pos="fixed" bottom="2" right="2" />
+      <NoReports />
     </Box>
-  )
-}
+    <ThemeToggleButton pos="fixed" bottom="2" right="2" />
+  </Box>
+)

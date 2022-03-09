@@ -4,7 +4,7 @@ import { mode } from '@chakra-ui/theme-tools'
 export const styles = {
   global: (props: ThemeProviderProps) => ({
     body: {
-      fontFamily: 'body',
+      fontFamily: 'Roboto, sans-serif',
       color: mode('gray.800', 'whiteAlpha.900')(props),
       bg: mode('white', 'gray.800')(props),
       lineHeight: 'base',

@@ -8,9 +8,9 @@ describe('<App />', () => {
   it('renders without errors', () => {
     render(<App />)
   })
-  it('renders without errors', () => {
+  it('Finder header text', () => {
     const screen = render(<App />)
-    const titleText = screen.getByText(/Hello Vite/i)
+    const titleText = screen.getByText(/Easily generate a report of your transactions/i)
     expect(titleText).toBeInTheDocument()
   })
 })

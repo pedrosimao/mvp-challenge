@@ -1,3 +1,5 @@
+import '@fontsource/roboto'
+
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom'

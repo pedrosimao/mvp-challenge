@@ -10,7 +10,7 @@ import { colors } from './foundations/colors'
 import { styles } from './styles'
 
 const config: ThemeConfig = {
-  initialColorMode: 'dark',
+  initialColorMode: 'light',
   useSystemColorMode: false,
 }
 
