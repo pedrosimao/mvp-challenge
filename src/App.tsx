@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Heading, Select, Text } from '@chakra-ui/react'
 
+import { DateButton } from 'src/components/DateButton'
 import { NoReports } from 'src/components/NoReports'
 import { ThemeToggleButton } from 'src/components/ThemeToggleButton'
 
@@ -27,12 +28,12 @@ export const App = (): JSX.Element => (
             <option>Gateway 2</option>
             <option>Gateway 3</option>
           </Select>
-          <Button w={140} variant="primary" marginLeft={23}>
+          <DateButton w={140} variant="primary" margin="0 0 0 23px">
             From Date
-          </Button>
-          <Button w={140} variant="primary" marginLeft={23}>
+          </DateButton>
+          <DateButton w={140} variant="primary" margin="0 0 0 23px">
             To Date
-          </Button>
+          </DateButton>
           <Button w={140} variant="secondary" marginLeft={23}>
             Generate Report
           </Button>
