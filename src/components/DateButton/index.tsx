@@ -5,17 +5,18 @@ import { StyledDatePicker } from './styles'
 
 export interface DateButtonProps extends ButtonProps {
   onChangeDate?: (date: Date | null) => void
+  placeholderText?: string
 }
 
-export const DateButton: FC<DateButtonProps> = ({ onChangeDate, ...props }) => {
-  const [startDate, setStartDate] = useState<Date | null>(new Date())
+export const DateButton: FC<DateButtonProps> = ({ placeholderText, onChangeDate, ...props }) => {
+  const [startDate, setStartDate] = useState<Date | null>(null)
   const CustomInput = forwardRef(
     (
       { value, onClick }: { value?: string; onClick?: () => void },
       ref: LegacyRef<HTMLButtonElement> | undefined,
     ) => (
       <Button onClick={onClick} ref={ref} {...props}>
-        {value}
+        {value || placeholderText}
       </Button>
     ),
   )

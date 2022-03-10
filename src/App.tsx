@@ -20,6 +20,7 @@ import {
 import groupBy from 'lodash/groupBy'
 import map from 'lodash/map'
 import { useEffect, useState } from 'react'
+import { MdArrowDropDown, MdOutlineDateRange } from 'react-icons/md'
 
 import { DateButton } from 'src/components/DateButton'
 import { NoReports } from 'src/components/NoReports'
@@ -83,6 +84,10 @@ export const App = (): JSX.Element => {
           </Flex>
           <Flex minW={700} alignItems="center">
             <Select
+              bg="primary"
+              color="#fff"
+              borderColor="primary"
+              icon={<MdArrowDropDown />}
               placeholder="Select Project"
               w={150}
               disabled={!projects || projectsLoading}
@@ -98,6 +103,10 @@ export const App = (): JSX.Element => {
                 : null}
             </Select>
             <Select
+              bg="primary"
+              color="#fff"
+              borderColor="primary"
+              icon={<MdArrowDropDown />}
               placeholder="Select Gateway"
               w={150}
               colorScheme="brand"
@@ -116,8 +125,10 @@ export const App = (): JSX.Element => {
             </Select>
             <DateButton
               w={140}
+              placeholderText="From date"
               variant="primary"
               margin="0 0 0 23px"
+              rightIcon={<MdOutlineDateRange />}
               onChangeDate={(date) => {
                 setFrom(dateToString(date))
               }}
@@ -126,8 +137,10 @@ export const App = (): JSX.Element => {
             </DateButton>
             <DateButton
               w={140}
+              placeholderText="To date"
               variant="primary"
               margin="0 0 0 23px"
+              rightIcon={<MdOutlineDateRange />}
               onChangeDate={(date) => {
                 setTo(dateToString(date))
               }}
