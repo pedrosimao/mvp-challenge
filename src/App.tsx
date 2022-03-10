@@ -51,16 +51,21 @@ export const App = (): JSX.Element => {
   }
 
   const getReportByProject = (data: ReportQueryType | undefined) => groupBy(data, 'projectId')
-  const getProjectNameById = (id: ReportBodyType['projectId']) =>
+  const getReportByGateway = (data: ReportQueryType | undefined) => groupBy(data, 'gatewayId')
+  const getProjectNameById = (id: string) =>
     projects?.find((project) => project?.projectId === id)?.name
-  const getGatewayNameById = (id: ReportBodyType['gatewayId']) =>
-    gateways?.find((gw) => gw?.gatewayId === id)?.name
+  const getGatewayNameById = (id: string) => gateways?.find((gw) => gw?.gatewayId === id)?.name
 
   const getTotalAmount = (data: ReportType[]) => data.reduce((acc, curr) => acc + curr.amount, 0)
 
   useEffect(() => {
     getNewReport()
   }, [projectId, gatewayId, to, from])
+
+  const shouldGroupByGateway = projectId && !gatewayId
+  const groupedItems = shouldGroupByGateway
+    ? getReportByGateway(report)
+    : getReportByProject(report)
 
   return (
     <Box>
@@ -134,11 +139,15 @@ export const App = (): JSX.Element => {
           </Flex>
         </Flex>
         <Box bg="#F1FAFE" borderRadius={10} w="95%" margin="30px auto">
+          {/* Get correct Table Headers */}
           {projectId ? getProjectNameById(projectId) : 'All Projects'} |{' '}
           {gatewayId ? getGatewayNameById(gatewayId) : 'All Gateways'}
-          {map(getReportByProject(report), (fullProject, fullProjectId) => {
-            // @ts-ignore
-            const fullProjectName = getProjectNameById(fullProjectId)
+          {/* Loop through different Collapsible */}
+          {map(groupedItems, (groupedItem, groupId) => {
+            // Get Project Name or Gateway Name
+            const fullProjectName = shouldGroupByGateway
+              ? getGatewayNameById(groupId)
+              : getProjectNameById(groupId)
             return (
               <Accordion defaultIndex={[0]} allowMultiple>
                 <AccordionItem>
@@ -146,7 +155,7 @@ export const App = (): JSX.Element => {
                     <AccordionButton>
                       <Flex w="100%" direction="row" justifyContent="space-between">
                         <span>{fullProjectName}</span>
-                        <span>Total: {getTotalAmount(fullProject).toFixed(0)}</span>
+                        <span>Total: {getTotalAmount(groupedItem).toFixed(0)}</span>
                       </Flex>
                       <AccordionIcon />
                     </AccordionButton>
@@ -156,18 +165,18 @@ export const App = (): JSX.Element => {
                       <Thead>
                         <Tr>
                           <Th>Date</Th>
-                          {gatewayId ? null : <Th>Gateway</Th>}
+                          {gatewayId || shouldGroupByGateway ? null : <Th>Gateway</Th>}
                           <Th>Transaction Id</Th>
                           <Th isNumeric>Amount</Th>
                         </Tr>
                       </Thead>
                       <Tbody>
-                        {fullProject?.map((oneProject: ReportType) => {
+                        {groupedItem?.map((oneProject: ReportType) => {
                           const gatewayName = getGatewayNameById(oneProject?.gatewayId)
                           return (
                             <Tr key={oneProject.paymentId}>
                               <Td>{oneProject?.created}</Td>
-                              {gatewayId ? null : <Td>{gatewayName}</Td>}
+                              {gatewayId || shouldGroupByGateway ? null : <Td>{gatewayName}</Td>}
                               <Td>{oneProject?.paymentId}</Td>
                               <Td isNumeric>{oneProject?.amount?.toFixed(0)} USD</Td>
                             </Tr>
