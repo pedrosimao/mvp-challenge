@@ -156,7 +156,7 @@ export const App = (): JSX.Element => {
                       <Thead>
                         <Tr>
                           <Th>Date</Th>
-                          <Th>Gateway</Th>
+                          {gatewayId ? null : <Th>Gateway</Th>}
                           <Th>Transaction Id</Th>
                           <Th isNumeric>Amount</Th>
                         </Tr>
@@ -167,7 +167,7 @@ export const App = (): JSX.Element => {
                           return (
                             <Tr key={oneProject.paymentId}>
                               <Td>{oneProject?.created}</Td>
-                              <Td>{gatewayName}</Td>
+                              {gatewayId ? null : <Td>{gatewayName}</Td>}
                               <Td>{oneProject?.paymentId}</Td>
                               <Td isNumeric>{oneProject?.amount?.toFixed(0)} USD</Td>
                             </Tr>
