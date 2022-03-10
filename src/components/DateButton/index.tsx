@@ -4,7 +4,7 @@ import { FC, forwardRef, LegacyRef, useState } from 'react'
 import { StyledDatePicker } from './styles'
 
 export interface DateButtonProps extends ButtonProps {
-  onChangeDate?: (date: Date | [Date | null, Date | null] | null) => void
+  onChangeDate?: (date: Date | null) => void
 }
 
 export const DateButton: FC<DateButtonProps> = ({ onChangeDate, ...props }) => {
@@ -26,6 +26,7 @@ export const DateButton: FC<DateButtonProps> = ({ onChangeDate, ...props }) => {
       onChange={(date) => {
         // @ts-ignore Todo: fix this typing
         setStartDate(date)
+        // @ts-ignore Todo: fix this typing
         if (onChangeDate) onChangeDate(date)
       }}
       customInput={<CustomInput />}
