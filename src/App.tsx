@@ -56,6 +56,8 @@ export const App = (): JSX.Element => {
   const getGatewayNameById = (id: ReportBodyType['gatewayId']) =>
     gateways?.find((gw) => gw?.gatewayId === id)?.name
 
+  const getTotalAmount = (data: ReportType[]) => data.reduce((acc, curr) => acc + curr.amount, 0)
+
   useEffect(() => {
     getNewReport()
   }, [projectId, gatewayId, to, from])
@@ -141,9 +143,10 @@ export const App = (): JSX.Element => {
                 <AccordionItem>
                   <h2>
                     <AccordionButton>
-                      <Box flex="1" textAlign="left">
-                        {fullProjectName}
-                      </Box>
+                      <Flex w="100%" direction="row" justifyContent="space-between">
+                        <span>{fullProjectName}</span>
+                        <span>Total: {getTotalAmount(fullProject).toFixed(0)}</span>
+                      </Flex>
                       <AccordionIcon />
                     </AccordionButton>
                   </h2>
