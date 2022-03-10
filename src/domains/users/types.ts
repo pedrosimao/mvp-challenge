@@ -5,4 +5,4 @@ export interface UserType {
   email: string
 }
 
-export type UsersQueryType = readonly UserType[]
+export type UsersQueryType = UserType[]

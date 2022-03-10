@@ -11,4 +11,4 @@ export interface ProjectType {
   website: string
 }
 
-export type ProjectQueryType = readonly ProjectType[]
+export type ProjectQueryType = ProjectType[]

@@ -1,4 +1,24 @@
-import { Box, Button, Flex, Heading, Select, Text } from '@chakra-ui/react'
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Select,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react'
+import groupBy from 'lodash/groupBy'
+import map from 'lodash/map'
 import { useEffect, useState } from 'react'
 
 import { DateButton } from 'src/components/DateButton'
@@ -7,7 +27,7 @@ import { ThemeToggleButton } from 'src/components/ThemeToggleButton'
 import { useGetGateways } from 'src/domains/gateways'
 import { useGetProjects } from 'src/domains/projects'
 import { useReport } from 'src/domains/report'
-import { ReportBodyType } from 'src/domains/report/types'
+import { ReportBodyType, ReportQueryType, ReportType } from 'src/domains/report/types'
 import { dateToString } from 'src/utils/dates'
 
 export const App = (): JSX.Element => {
@@ -27,9 +47,14 @@ export const App = (): JSX.Element => {
       gatewayId,
     }
     const res = await mutateReport(body)
-    // eslint-disable-next-line no-console
-    console.log({ report, res })
+    getReportByProject(res)
   }
+
+  const getReportByProject = (data: ReportQueryType | undefined) => groupBy(data, 'projectId')
+  const getProjectNameById = (id: ReportBodyType['projectId']) =>
+    projects?.find((project) => project?.projectId === id)?.name
+  const getGatewayNameById = (id: ReportBodyType['gatewayId']) =>
+    gateways?.find((gw) => gw?.gatewayId === id)?.name
 
   useEffect(() => {
     getNewReport()
@@ -39,7 +64,7 @@ export const App = (): JSX.Element => {
     <Box>
       <Box as="header" h="100vh" margin="0 auto">
         {/* Header */}
-        <Flex as="header" direction="row" justifyContent="space-between" w="95%">
+        <Flex as="header" direction="row" justifyContent="space-between" w="95%" margin="10px auto">
           <Flex direction="column">
             <Heading as="h2" fontSize={24}>
               Reports
@@ -106,7 +131,53 @@ export const App = (): JSX.Element => {
             </Button>
           </Flex>
         </Flex>
-        <NoReports />
+        <Box bg="#F1FAFE" borderRadius={10} w="95%" margin="30px auto">
+          All Projects | All Gateways
+          {map(getReportByProject(report), (fullProject, fullProjectId) => {
+            // @ts-ignore
+            const fullProjectName = getProjectNameById(fullProjectId)
+            return (
+              <Accordion defaultIndex={[0]} allowMultiple>
+                <AccordionItem>
+                  <h2>
+                    <AccordionButton>
+                      <Box flex="1" textAlign="left">
+                        {fullProjectName}
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4}>
+                    <Table variant="striped" colorScheme="teal">
+                      <Thead>
+                        <Tr>
+                          <Th>Date</Th>
+                          <Th>Gateway</Th>
+                          <Th>Transaction Id</Th>
+                          <Th isNumeric>Amount</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {fullProject?.map((oneProject: ReportType) => {
+                          const gatewayName = getGatewayNameById(oneProject?.gatewayId)
+                          return (
+                            <Tr key={oneProject.paymentId}>
+                              <Td>{oneProject?.created}</Td>
+                              <Td>{gatewayName}</Td>
+                              <Td>{oneProject?.paymentId}</Td>
+                              <Td isNumeric>{oneProject?.amount?.toFixed(0)} USD</Td>
+                            </Tr>
+                          )
+                        })}
+                      </Tbody>
+                    </Table>
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
+            )
+          })}
+        </Box>
+        {report ? null : <NoReports />}
       </Box>
       <ThemeToggleButton pos="fixed" bottom="2" right="2" />
     </Box>

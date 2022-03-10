@@ -8,4 +8,4 @@ export interface GatewayType {
   userIds: string[]
 }
 
-export type GatewayQueryType = readonly GatewayType[]
+export type GatewayQueryType = GatewayType[]
