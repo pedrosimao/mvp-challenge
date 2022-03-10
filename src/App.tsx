@@ -8,6 +8,7 @@ import {
   Flex,
   Heading,
   Select,
+  Spinner,
   Table,
   Tbody,
   Td,
@@ -34,7 +35,7 @@ import { dateToString } from 'src/utils/dates'
 export const App = (): JSX.Element => {
   const { data: projects, isLoading: projectsLoading } = useGetProjects()
   const { data: gateways, isLoading: gatewaysLoading } = useGetGateways()
-  const { data: report, mutateAsync: mutateReport } = useReport()
+  const { data: report, isLoading: reportLoading, mutateAsync: mutateReport } = useReport()
   const [projectId, setProjectId] = useState<ReportBodyType['projectId']>(undefined)
   const [gatewayId, setGatewayId] = useState<ReportBodyType['gatewayId']>(undefined)
   const [to, setTo] = useState<ReportBodyType['to']>('')
@@ -43,7 +44,7 @@ export const App = (): JSX.Element => {
   const getNewReport = async () => {
     const body = {
       from,
-      to,
+      to: to || dateToString(new Date()),
       projectId,
       gatewayId,
     }
@@ -74,9 +75,9 @@ export const App = (): JSX.Element => {
 
   return (
     <Box>
-      <Box as="header" h="100vh" margin="0 auto">
+      <Box as="main" margin="0 auto">
         {/* Header */}
-        <Flex as="header" direction="row" justifyContent="space-between" w="95%" margin="10px auto">
+        <Flex as="header" direction="row" justifyContent="space-between" w="90%" margin="10px auto">
           <Flex direction="column">
             <Heading as="h2" fontSize={24}>
               Reports
@@ -91,7 +92,7 @@ export const App = (): JSX.Element => {
               color="#fff"
               borderColor="primary"
               icon={<MdArrowDropDown />}
-              placeholder="Select Project"
+              placeholder="All Projects"
               w={150}
               disabled={!projects || projectsLoading}
               // @ts-ignore If backend is always providing the correct type, this should be fine
@@ -110,7 +111,7 @@ export const App = (): JSX.Element => {
               color="#fff"
               borderColor="primary"
               icon={<MdArrowDropDown />}
-              placeholder="Select Gateway"
+              placeholder="All Gateways"
               w={150}
               colorScheme="brand"
               marginLeft={23}
@@ -157,74 +158,80 @@ export const App = (): JSX.Element => {
         </Flex>
         {groupedItems ? (
           <>
-            <Box bg={accordionBg} borderRadius={10} w="95%" margin="30px auto" paddingBottom={15}>
+            <Box bg={accordionBg} borderRadius={10} w="90%" margin="30px auto" paddingBottom={15}>
               {/* Get correct Table Headers */}
               <Heading as="h3" fontSize={16} fontWeight={700} padding="18px 0 34px 24px">
                 {projectId ? getProjectNameById(projectId) : 'All Projects'} |{' '}
                 {gatewayId ? getGatewayNameById(gatewayId) : 'All Gateways'}
               </Heading>
-              <Accordion allowMultiple={false} defaultIndex={[0]} allowToggle>
-                {/* Loop through different Collapsible */}
-                {map(groupedItems, (groupedItem, groupId) => {
-                  // Get Project Name or Gateway Name
-                  const fullProjectName = shouldGroupByGateway
-                    ? getGatewayNameById(groupId)
-                    : getProjectNameById(groupId)
-                  return (
-                    <AccordionItem borderWidth={0} borderColor={accordionBg}>
-                      <h2>
-                        <AccordionButton>
-                          <Flex
-                            w="100%"
-                            direction="row"
-                            justifyContent="space-between"
-                            padding="26px"
-                            bg={accordionButtonBg}
-                            borderRadius={10}
-                          >
-                            <Text fontWeight={700} fontSize={16}>
-                              {fullProjectName}
-                            </Text>
-                            <Text fontWeight={700} fontSize={16}>
-                              {/* @ts-ignore Todo: investigate why this type has a bug */}
-                              TOTAL: {getTotalAmount(groupedItem).toFixed(0)} USD
-                            </Text>
-                          </Flex>
-                        </AccordionButton>
-                      </h2>
-                      <AccordionPanel pb={4}>
-                        <Table variant="striped" colorScheme="dataTableScheme">
-                          <Thead>
-                            <Tr>
-                              <Th>Date</Th>
-                              {gatewayId || shouldGroupByGateway ? null : <Th>Gateway</Th>}
-                              <Th>Transaction Id</Th>
-                              <Th isNumeric>Amount</Th>
-                            </Tr>
-                          </Thead>
-                          <Tbody>
-                            {groupedItem?.map((oneProject: ReportType) => {
-                              const gatewayName = getGatewayNameById(oneProject?.gatewayId)
-                              return (
-                                <Tr key={oneProject.paymentId}>
-                                  <Td>{oneProject?.created}</Td>
-                                  {gatewayId || shouldGroupByGateway ? null : (
-                                    <Td>{gatewayName}</Td>
-                                  )}
-                                  <Td>{oneProject?.paymentId}</Td>
-                                  <Td isNumeric>{oneProject?.amount?.toFixed(0)} USD</Td>
-                                </Tr>
-                              )
-                            })}
-                          </Tbody>
-                        </Table>
-                      </AccordionPanel>
-                    </AccordionItem>
-                  )
-                })}
-              </Accordion>
+              {reportLoading ? (
+                <Flex w="100%" padding={50} alignItems="center">
+                  <Spinner margin="150px auto" />
+                </Flex>
+              ) : (
+                <Accordion allowMultiple={false} defaultIndex={[0]} allowToggle>
+                  {/* Loop through different Collapsible */}
+                  {map(groupedItems, (groupedItem, groupId) => {
+                    // Get Project Name or Gateway Name
+                    const fullProjectName = shouldGroupByGateway
+                      ? getGatewayNameById(groupId)
+                      : getProjectNameById(groupId)
+                    return (
+                      <AccordionItem borderWidth={0} borderColor={accordionBg}>
+                        <h2>
+                          <AccordionButton>
+                            <Flex
+                              w="100%"
+                              direction="row"
+                              justifyContent="space-between"
+                              padding="26px"
+                              bg={accordionButtonBg}
+                              borderRadius={10}
+                            >
+                              <Text fontWeight={700} fontSize={16}>
+                                {fullProjectName}
+                              </Text>
+                              <Text fontWeight={700} fontSize={16}>
+                                {/* @ts-ignore Todo: investigate why this type has a bug */}
+                                TOTAL: {getTotalAmount(groupedItem).toFixed(0)} USD
+                              </Text>
+                            </Flex>
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel pb={4}>
+                          <Table variant="striped" colorScheme="dataTableScheme">
+                            <Thead>
+                              <Tr>
+                                <Th>Date</Th>
+                                {gatewayId || shouldGroupByGateway ? null : <Th>Gateway</Th>}
+                                <Th>Transaction Id</Th>
+                                <Th isNumeric>Amount</Th>
+                              </Tr>
+                            </Thead>
+                            <Tbody>
+                              {groupedItem?.map((oneProject: ReportType) => {
+                                const gatewayName = getGatewayNameById(oneProject?.gatewayId)
+                                return (
+                                  <Tr key={oneProject.paymentId}>
+                                    <Td>{oneProject?.created}</Td>
+                                    {gatewayId || shouldGroupByGateway ? null : (
+                                      <Td>{gatewayName}</Td>
+                                    )}
+                                    <Td>{oneProject?.paymentId}</Td>
+                                    <Td isNumeric>{oneProject?.amount?.toFixed(0)} USD</Td>
+                                  </Tr>
+                                )
+                              })}
+                            </Tbody>
+                          </Table>
+                        </AccordionPanel>
+                      </AccordionItem>
+                    )
+                  })}
+                </Accordion>
+              )}
             </Box>
-            <Box bg={accordionBg} borderRadius={10} w="95%" margin="30px auto" padding={17}>
+            <Box bg={accordionBg} borderRadius={10} w="90%" margin="30px auto" padding={17}>
               <Text fontSize={16} fontWeight={700}>
                 TOTAL: {getTotalAmount(report)?.toFixed(0)} USD
               </Text>
