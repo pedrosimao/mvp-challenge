@@ -3,7 +3,11 @@ import { darken, mode, whiten } from '@chakra-ui/theme-tools'
 
 export const Button = {
   // style object for base or default style
-  // baseStyle: {},
+  baseStyle: {
+    fontWeight: '400',
+    height: 32,
+    borderRadius: 5,
+  },
   // styles for different sizes ("sm", "md", "lg")
   // sizes: {},
   // styles for different visual variants ("outline", "solid")

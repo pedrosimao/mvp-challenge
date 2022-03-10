@@ -1,7 +1,6 @@
 import {
   Accordion,
   AccordionButton,
-  AccordionIcon,
   AccordionItem,
   AccordionPanel,
   Box,
@@ -16,6 +15,7 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import groupBy from 'lodash/groupBy'
 import map from 'lodash/map'
@@ -68,6 +68,9 @@ export const App = (): JSX.Element => {
   const groupedItems = shouldGroupByGateway
     ? getReportByGateway(report)
     : getReportByProject(report)
+
+  const accordionBg = useColorModeValue('dataTable', 'gray.700')
+  const accordionButtonBg = useColorModeValue('white', 'gray.500')
 
   return (
     <Box>
@@ -154,31 +157,43 @@ export const App = (): JSX.Element => {
         </Flex>
         {groupedItems ? (
           <>
-            <Box bg="#F1FAFE" borderRadius={10} w="95%" margin="30px auto">
+            <Box bg={accordionBg} borderRadius={10} w="95%" margin="30px auto" paddingBottom={15}>
               {/* Get correct Table Headers */}
-              {projectId ? getProjectNameById(projectId) : 'All Projects'} |{' '}
-              {gatewayId ? getGatewayNameById(gatewayId) : 'All Gateways'}
-              {/* Loop through different Collapsible */}
-              {map(groupedItems, (groupedItem, groupId) => {
-                // Get Project Name or Gateway Name
-                const fullProjectName = shouldGroupByGateway
-                  ? getGatewayNameById(groupId)
-                  : getProjectNameById(groupId)
-                return (
-                  <Accordion defaultIndex={[0]} allowMultiple>
-                    <AccordionItem>
+              <Heading as="h3" fontSize={16} fontWeight={700} padding="18px 0 34px 24px">
+                {projectId ? getProjectNameById(projectId) : 'All Projects'} |{' '}
+                {gatewayId ? getGatewayNameById(gatewayId) : 'All Gateways'}
+              </Heading>
+              <Accordion allowMultiple={false} defaultIndex={[0]} allowToggle>
+                {/* Loop through different Collapsible */}
+                {map(groupedItems, (groupedItem, groupId) => {
+                  // Get Project Name or Gateway Name
+                  const fullProjectName = shouldGroupByGateway
+                    ? getGatewayNameById(groupId)
+                    : getProjectNameById(groupId)
+                  return (
+                    <AccordionItem borderWidth={0} borderColor={accordionBg}>
                       <h2>
                         <AccordionButton>
-                          <Flex w="100%" direction="row" justifyContent="space-between">
-                            <span>{fullProjectName}</span>
-                            {/* @ts-ignore Todo: investigate why this type has a bug */}
-                            <span>Total: {getTotalAmount(groupedItem).toFixed(0)}</span>
+                          <Flex
+                            w="100%"
+                            direction="row"
+                            justifyContent="space-between"
+                            padding="26px"
+                            bg={accordionButtonBg}
+                            borderRadius={10}
+                          >
+                            <Text fontWeight={700} fontSize={16}>
+                              {fullProjectName}
+                            </Text>
+                            <Text fontWeight={700} fontSize={16}>
+                              {/* @ts-ignore Todo: investigate why this type has a bug */}
+                              TOTAL: {getTotalAmount(groupedItem).toFixed(0)} USD
+                            </Text>
                           </Flex>
-                          <AccordionIcon />
                         </AccordionButton>
                       </h2>
                       <AccordionPanel pb={4}>
-                        <Table variant="striped" colorScheme="teal">
+                        <Table variant="striped" colorScheme="dataTableScheme">
                           <Thead>
                             <Tr>
                               <Th>Date</Th>
@@ -205,12 +220,14 @@ export const App = (): JSX.Element => {
                         </Table>
                       </AccordionPanel>
                     </AccordionItem>
-                  </Accordion>
-                )
-              })}
+                  )
+                })}
+              </Accordion>
             </Box>
-            <Box bg="#F1FAFE" borderRadius={10} w="95%" margin="30px auto" padding={5}>
-              Total: {getTotalAmount(report)?.toFixed(0)} USD
+            <Box bg={accordionBg} borderRadius={10} w="95%" margin="30px auto" padding={17}>
+              <Text fontSize={16} fontWeight={700}>
+                TOTAL: {getTotalAmount(report)?.toFixed(0)} USD
+              </Text>
             </Box>
           </>
         ) : null}
