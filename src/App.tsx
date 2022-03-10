@@ -56,7 +56,8 @@ export const App = (): JSX.Element => {
     projects?.find((project) => project?.projectId === id)?.name
   const getGatewayNameById = (id: string) => gateways?.find((gw) => gw?.gatewayId === id)?.name
 
-  const getTotalAmount = (data: ReportType[]) => data.reduce((acc, curr) => acc + curr.amount, 0)
+  const getTotalAmount = (data: ReportType[] | undefined) =>
+    data && data.reduce((acc, curr) => acc + curr.amount, 0)
 
   useEffect(() => {
     getNewReport()
@@ -138,58 +139,68 @@ export const App = (): JSX.Element => {
             </Button>
           </Flex>
         </Flex>
-        <Box bg="#F1FAFE" borderRadius={10} w="95%" margin="30px auto">
-          {/* Get correct Table Headers */}
-          {projectId ? getProjectNameById(projectId) : 'All Projects'} |{' '}
-          {gatewayId ? getGatewayNameById(gatewayId) : 'All Gateways'}
-          {/* Loop through different Collapsible */}
-          {map(groupedItems, (groupedItem, groupId) => {
-            // Get Project Name or Gateway Name
-            const fullProjectName = shouldGroupByGateway
-              ? getGatewayNameById(groupId)
-              : getProjectNameById(groupId)
-            return (
-              <Accordion defaultIndex={[0]} allowMultiple>
-                <AccordionItem>
-                  <h2>
-                    <AccordionButton>
-                      <Flex w="100%" direction="row" justifyContent="space-between">
-                        <span>{fullProjectName}</span>
-                        <span>Total: {getTotalAmount(groupedItem).toFixed(0)}</span>
-                      </Flex>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel pb={4}>
-                    <Table variant="striped" colorScheme="teal">
-                      <Thead>
-                        <Tr>
-                          <Th>Date</Th>
-                          {gatewayId || shouldGroupByGateway ? null : <Th>Gateway</Th>}
-                          <Th>Transaction Id</Th>
-                          <Th isNumeric>Amount</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {groupedItem?.map((oneProject: ReportType) => {
-                          const gatewayName = getGatewayNameById(oneProject?.gatewayId)
-                          return (
-                            <Tr key={oneProject.paymentId}>
-                              <Td>{oneProject?.created}</Td>
-                              {gatewayId || shouldGroupByGateway ? null : <Td>{gatewayName}</Td>}
-                              <Td>{oneProject?.paymentId}</Td>
-                              <Td isNumeric>{oneProject?.amount?.toFixed(0)} USD</Td>
+        {groupedItems ? (
+          <>
+            <Box bg="#F1FAFE" borderRadius={10} w="95%" margin="30px auto">
+              {/* Get correct Table Headers */}
+              {projectId ? getProjectNameById(projectId) : 'All Projects'} |{' '}
+              {gatewayId ? getGatewayNameById(gatewayId) : 'All Gateways'}
+              {/* Loop through different Collapsible */}
+              {map(groupedItems, (groupedItem, groupId) => {
+                // Get Project Name or Gateway Name
+                const fullProjectName = shouldGroupByGateway
+                  ? getGatewayNameById(groupId)
+                  : getProjectNameById(groupId)
+                return (
+                  <Accordion defaultIndex={[0]} allowMultiple>
+                    <AccordionItem>
+                      <h2>
+                        <AccordionButton>
+                          <Flex w="100%" direction="row" justifyContent="space-between">
+                            <span>{fullProjectName}</span>
+                            {/* @ts-ignore Todo: investigate why this type has a bug */}
+                            <span>Total: {getTotalAmount(groupedItem).toFixed(0)}</span>
+                          </Flex>
+                          <AccordionIcon />
+                        </AccordionButton>
+                      </h2>
+                      <AccordionPanel pb={4}>
+                        <Table variant="striped" colorScheme="teal">
+                          <Thead>
+                            <Tr>
+                              <Th>Date</Th>
+                              {gatewayId || shouldGroupByGateway ? null : <Th>Gateway</Th>}
+                              <Th>Transaction Id</Th>
+                              <Th isNumeric>Amount</Th>
                             </Tr>
-                          )
-                        })}
-                      </Tbody>
-                    </Table>
-                  </AccordionPanel>
-                </AccordionItem>
-              </Accordion>
-            )
-          })}
-        </Box>
+                          </Thead>
+                          <Tbody>
+                            {groupedItem?.map((oneProject: ReportType) => {
+                              const gatewayName = getGatewayNameById(oneProject?.gatewayId)
+                              return (
+                                <Tr key={oneProject.paymentId}>
+                                  <Td>{oneProject?.created}</Td>
+                                  {gatewayId || shouldGroupByGateway ? null : (
+                                    <Td>{gatewayName}</Td>
+                                  )}
+                                  <Td>{oneProject?.paymentId}</Td>
+                                  <Td isNumeric>{oneProject?.amount?.toFixed(0)} USD</Td>
+                                </Tr>
+                              )
+                            })}
+                          </Tbody>
+                        </Table>
+                      </AccordionPanel>
+                    </AccordionItem>
+                  </Accordion>
+                )
+              })}
+            </Box>
+            <Box bg="#F1FAFE" borderRadius={10} w="95%" margin="30px auto" padding={5}>
+              Total: {getTotalAmount(report)?.toFixed(0)} USD
+            </Box>
+          </>
+        ) : null}
         {report ? null : <NoReports />}
       </Box>
       <ThemeToggleButton pos="fixed" bottom="2" right="2" />
