@@ -64,19 +64,6 @@ export const App = (): JSX.Element => {
   const getTotalAmount = (data: ReportType[] | undefined) =>
     data && data.reduce((acc, curr) => acc + curr.amount, 0)
 
-  useEffect(() => {
-    getNewReport()
-    setChartData(undefined)
-    // @eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId, gatewayId, to, from])
-
-  const shouldGroupByGateway = projectId && !gatewayId
-  const groupedItems = shouldGroupByGateway
-    ? getReportByGateway(report)
-    : getReportByProject(report)
-
-  const accordionBg = useColorModeValue('dataTable', 'gray.700')
-  const accordionButtonBg = useColorModeValue('white', 'gray.500')
   const handleGenerateChart = () => {
     const newData = map(groupedItems, (item, key) => ({
       title: shouldGroupByGateway ? getGatewayNameById(key) : getProjectNameById(key),
@@ -86,6 +73,20 @@ export const App = (): JSX.Element => {
     // @ts-ignore Todo: fix this type
     setChartData(newData)
   }
+
+  const shouldGroupByGateway = projectId && !gatewayId
+  const groupedItems = shouldGroupByGateway
+    ? getReportByGateway(report)
+    : getReportByProject(report)
+
+  const accordionBg = useColorModeValue('dataTable', 'gray.700')
+  const accordionButtonBg = useColorModeValue('white', 'gray.500')
+
+  useEffect(() => {
+    getNewReport()
+    setChartData(undefined)
+    // @eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId, gatewayId, to, from])
 
   return (
     <Box>
@@ -171,13 +172,13 @@ export const App = (): JSX.Element => {
           </Flex>
         </Flex>
         {/* No Data available */}
-        {report ? null : (
+        {report && report.length > 0 ? null : (
           <Flex h={500} alignItems="center" justifyContent="center">
             <NoReports />
           </Flex>
         )}
         {/* Data is available */}
-        {report ? (
+        {report && report.length > 0 ? (
           <Flex w="90%" justifyContent="center" margin="0 auto">
             {/* Table */}
             {groupedItems ? (
