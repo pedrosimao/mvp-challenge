@@ -260,14 +260,31 @@ export const App = (): JSX.Element => {
                     </Accordion>
                   )}
                 </Box>
-                <Box bg={accordionBg} borderRadius={10} margin="30px auto" padding={17}>
+                {chartData ? null : (
+                  <Box bg={accordionBg} borderRadius={10} margin="30px auto" padding={17}>
+                    <Text fontSize={16} fontWeight={700}>
+                      TOTAL: {getTotalAmount(report)?.toFixed(0)} USD
+                    </Text>
+                  </Box>
+                )}
+              </Box>
+            ) : null}
+            {report && chartData ? (
+              <Flex direction="column" width="100%" justifyContent="flex-start">
+                <PieChart data={chartData} />
+                <Flex
+                  bg={accordionBg}
+                  borderRadius={10}
+                  margin="30px 18px"
+                  padding={17}
+                  width="100%"
+                >
                   <Text fontSize={16} fontWeight={700}>
                     TOTAL: {getTotalAmount(report)?.toFixed(0)} USD
                   </Text>
-                </Box>
-              </Box>
+                </Flex>
+              </Flex>
             ) : null}
-            {report && chartData ? <PieChart data={chartData} /> : null}
           </Flex>
         ) : null}
       </Box>
