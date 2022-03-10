@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type StringOfLength<Min, Max> = string & {
   // @ts-ignore
   StringOfLength: unique symbol // this is the phantom type
