@@ -134,7 +134,8 @@ export const App = (): JSX.Element => {
           </Flex>
         </Flex>
         <Box bg="#F1FAFE" borderRadius={10} w="95%" margin="30px auto">
-          All Projects | All Gateways
+          {projectId ? getProjectNameById(projectId) : 'All Projects'} |{' '}
+          {gatewayId ? getGatewayNameById(gatewayId) : 'All Gateways'}
           {map(getReportByProject(report), (fullProject, fullProjectId) => {
             // @ts-ignore
             const fullProjectName = getProjectNameById(fullProjectId)
