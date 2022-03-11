@@ -7,6 +7,7 @@ Important facts:
 - I have chosen not to code the top header and left menu as it was time-consuming, and they are not very relevant to show coding skills. If you find absolutely needed I can add it.
 - I have added a button allowing to have a dark theme (which was not on the challenge description)
 - I had doubts about how the `Generate Report` button works. The Figma design was not super clear. In a normal situation I would ask the client before implementing. But for the testing I just assumed the button generates charts.
+- In a real project I would have added more E2E tests. The tests here are more of an example of what I am accustomed to testing.
 
 ## Main Library Choices
 
