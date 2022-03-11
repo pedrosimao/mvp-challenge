@@ -85,7 +85,7 @@ export const HomePage = (): JSX.Element => {
   useEffect(() => {
     getNewReport()
     setChartData(undefined)
-    // @eslint-disable-next-line react-hooks/exhaustive-deps
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [projectId, gatewayId, to, from])
 
   return (

@@ -9,7 +9,6 @@ export interface PieChartPropsType {
 }
 
 export const PieChart: FC<PieChartPropsType> = ({ data }) => {
-  const getTotal = () => data.reduce((acc, curr) => acc + curr.value, 0)
   const accordionBg = useColorModeValue('dataTable', 'gray.700')
   return (
     <Flex w="100%" direction="column" alignSelf="flex-start" margin="30px 0 0 30px">
@@ -43,7 +42,6 @@ export const PieChart: FC<PieChartPropsType> = ({ data }) => {
           }}
         />
       </Box>
-      {/* <Box>TOTAL: {getTotal().toFixed(0)} USD</Box> */}
     </Flex>
   )
 }
