@@ -96,3 +96,18 @@ yarn build
   ```bash
   yarn test:watch
   ```
+
+### E2E Tests
+
+- Run E2E tests on the terminal
+
+  ```bash
+  yarn dev
+  yarn cypress:run
+  ```
+
+- See the E2E tests inside the browser
+  ```bash
+  yarn dev
+  yarn cypress:open
+  ```
