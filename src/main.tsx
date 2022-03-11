@@ -5,9 +5,8 @@ import { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
+import { HomePage } from 'src/pages/Home'
 import theme from 'src/theme'
-
-import { App } from './App'
 
 // Create a React-Query client
 const queryClient = new QueryClient()
@@ -17,7 +16,7 @@ ReactDOM.render(
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <QueryClientProvider client={queryClient}>
-        <App />
+        <HomePage />
       </QueryClientProvider>
     </ChakraProvider>
   </StrictMode>,

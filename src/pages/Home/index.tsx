@@ -18,7 +18,6 @@ import {
   Tr,
   useColorModeValue,
 } from '@chakra-ui/react'
-import groupBy from 'lodash/groupBy'
 import map from 'lodash/map'
 import { useEffect, useState } from 'react'
 import { MdArrowDropDown, MdOutlineDateRange } from 'react-icons/md'
@@ -30,11 +29,19 @@ import { ThemeToggleButton } from 'src/components/ThemeToggleButton'
 import { useGetGateways } from 'src/domains/gateways'
 import { useGetProjects } from 'src/domains/projects'
 import { useReport } from 'src/domains/report'
-import { ReportBodyType, ReportQueryType, ReportType } from 'src/domains/report/types'
+import { ReportBodyType, ReportType } from 'src/domains/report/types'
 import { getRandomColor } from 'src/utils/charts'
 import { dateToString } from 'src/utils/dates'
 
-export const App = (): JSX.Element => {
+import {
+  getGatewayNameById,
+  getProjectNameById,
+  getReportByGateway,
+  getReportByProject,
+  getTotalAmount,
+} from './helpers'
+
+export const HomePage = (): JSX.Element => {
   const { data: projects, isLoading: projectsLoading } = useGetProjects()
   const { data: gateways, isLoading: gatewaysLoading } = useGetGateways()
   const { data: report, isLoading: reportLoading, mutateAsync: mutateReport } = useReport()
@@ -55,18 +62,11 @@ export const App = (): JSX.Element => {
     getReportByProject(res)
   }
 
-  const getReportByProject = (data: ReportQueryType | undefined) => groupBy(data, 'projectId')
-  const getReportByGateway = (data: ReportQueryType | undefined) => groupBy(data, 'gatewayId')
-  const getProjectNameById = (id: string) =>
-    projects?.find((project) => project?.projectId === id)?.name
-  const getGatewayNameById = (id: string) => gateways?.find((gw) => gw?.gatewayId === id)?.name
-
-  const getTotalAmount = (data: ReportType[] | undefined) =>
-    data && data.reduce((acc, curr) => acc + curr.amount, 0)
-
   const handleGenerateChart = () => {
     const newData = map(groupedItems, (item, key) => ({
-      title: shouldGroupByGateway ? getGatewayNameById(key) : getProjectNameById(key),
+      title: shouldGroupByGateway
+        ? getGatewayNameById(gateways, key)
+        : getProjectNameById(projects, key),
       value: getTotalAmount(item),
       color: getRandomColor(),
     }))
@@ -186,8 +186,8 @@ export const App = (): JSX.Element => {
                 <Box bg={accordionBg} borderRadius={10} margin="30px auto" paddingBottom={15}>
                   {/* Get correct Table Headers */}
                   <Heading as="h3" fontSize={16} fontWeight={700} padding="18px 0 34px 24px">
-                    {projectId ? getProjectNameById(projectId) : 'All Projects'} |{' '}
-                    {gatewayId ? getGatewayNameById(gatewayId) : 'All Gateways'}
+                    {projectId ? getProjectNameById(projects, projectId) : 'All Projects'} |{' '}
+                    {gatewayId ? getGatewayNameById(gateways, gatewayId) : 'All Gateways'}
                   </Heading>
                   {reportLoading ? (
                     <Flex w="100%" padding={50} alignItems="center">
@@ -199,8 +199,8 @@ export const App = (): JSX.Element => {
                       {map(groupedItems, (groupedItem, groupId) => {
                         // Get Project Name or Gateway Name
                         const fullProjectName = shouldGroupByGateway
-                          ? getGatewayNameById(groupId)
-                          : getProjectNameById(groupId)
+                          ? getGatewayNameById(gateways, groupId)
+                          : getProjectNameById(projects, groupId)
                         return (
                           <AccordionItem
                             borderWidth={0}
@@ -239,7 +239,10 @@ export const App = (): JSX.Element => {
                                 </Thead>
                                 <Tbody>
                                   {groupedItem?.map((oneProject: ReportType) => {
-                                    const gatewayName = getGatewayNameById(oneProject?.gatewayId)
+                                    const gatewayName = getGatewayNameById(
+                                      gateways,
+                                      oneProject?.gatewayId,
+                                    )
                                     return (
                                       <Tr key={oneProject.paymentId}>
                                         <Td>{oneProject?.created}</Td>
