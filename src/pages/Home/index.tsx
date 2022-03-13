@@ -1,27 +1,18 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionItem,
-  AccordionPanel,
   Box,
   Button,
   Flex,
   Heading,
   Select,
   Spinner,
-  Table,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
   useColorModeValue,
 } from '@chakra-ui/react'
 import map from 'lodash/map'
 import { useEffect, useState } from 'react'
 import { MdArrowDropDown, MdOutlineDateRange } from 'react-icons/md'
 
+import { AccordionTable } from 'src/components/AccordionTable'
 import { DateButton } from 'src/components/DateButton'
 import { NoReports } from 'src/components/NoReports'
 import { ChartDataType, PieChart } from 'src/components/PieChart'
@@ -29,7 +20,7 @@ import { ThemeToggleButton } from 'src/components/ThemeToggleButton'
 import { useGetGateways } from 'src/domains/gateways'
 import { useGetProjects } from 'src/domains/projects'
 import { useReport } from 'src/domains/report'
-import { ReportBodyType, ReportType } from 'src/domains/report/types'
+import { ReportBodyType } from 'src/domains/report/types'
 import { getRandomColor } from 'src/utils/charts'
 import { dateToString } from 'src/utils/dates'
 
@@ -80,7 +71,6 @@ export const HomePage = (): JSX.Element => {
     : getReportByProject(report)
 
   const accordionBg = useColorModeValue('dataTable', 'gray.700')
-  const accordionButtonBg = useColorModeValue('white', 'gray.500')
 
   useEffect(() => {
     getNewReport()
@@ -194,73 +184,14 @@ export const HomePage = (): JSX.Element => {
                       <Spinner margin="150px auto" />
                     </Flex>
                   ) : (
-                    <Accordion allowMultiple={false} allowToggle>
-                      {/* Loop through different Collapsible */}
-                      {map(groupedItems, (groupedItem, groupId) => {
-                        // Get Project Name or Gateway Name
-                        const fullProjectName = shouldGroupByGateway
-                          ? getGatewayNameById(gateways, groupId)
-                          : getProjectNameById(projects, groupId)
-                        return (
-                          <AccordionItem
-                            borderWidth={0}
-                            borderColor={accordionBg}
-                            key={`Accordion-${groupId}`}
-                          >
-                            <h2>
-                              <AccordionButton>
-                                <Flex
-                                  w="100%"
-                                  direction="row"
-                                  justifyContent="space-between"
-                                  padding="26px"
-                                  bg={accordionButtonBg}
-                                  borderRadius={10}
-                                >
-                                  <Text fontWeight={700} fontSize={16}>
-                                    {fullProjectName}
-                                  </Text>
-                                  <Text fontWeight={700} fontSize={16}>
-                                    {/* @ts-ignore Todo: investigate why this type has a bug */}
-                                    TOTAL: {getTotalAmount(groupedItem).toFixed(0)} USD
-                                  </Text>
-                                </Flex>
-                              </AccordionButton>
-                            </h2>
-                            <AccordionPanel pb={4}>
-                              <Table variant="striped" colorScheme="dataTableScheme">
-                                <Thead>
-                                  <Tr>
-                                    <Th>Date</Th>
-                                    {gatewayId || shouldGroupByGateway ? null : <Th>Gateway</Th>}
-                                    <Th>Transaction Id</Th>
-                                    <Th isNumeric>Amount</Th>
-                                  </Tr>
-                                </Thead>
-                                <Tbody>
-                                  {groupedItem?.map((oneProject: ReportType) => {
-                                    const gatewayName = getGatewayNameById(
-                                      gateways,
-                                      oneProject?.gatewayId,
-                                    )
-                                    return (
-                                      <Tr key={oneProject.paymentId}>
-                                        <Td>{oneProject?.created}</Td>
-                                        {gatewayId || shouldGroupByGateway ? null : (
-                                          <Td>{gatewayName}</Td>
-                                        )}
-                                        <Td>{oneProject?.paymentId}</Td>
-                                        <Td isNumeric>{oneProject?.amount?.toFixed(0)} USD</Td>
-                                      </Tr>
-                                    )
-                                  })}
-                                </Tbody>
-                              </Table>
-                            </AccordionPanel>
-                          </AccordionItem>
-                        )
-                      })}
-                    </Accordion>
+                    <AccordionTable
+                      // @ts-ignore Todo: fix lodash groupBy type
+                      groupedItems={groupedItems}
+                      gateways={gateways}
+                      projects={projects}
+                      shouldGroupByGateway={shouldGroupByGateway}
+                      isGatewayChosen={!!gatewayId}
+                    />
                   )}
                 </Box>
                 {chartData ? null : (
